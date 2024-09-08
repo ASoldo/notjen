@@ -1,13 +1,7 @@
 -- Require the plugin and the new Git plugin
 local plugin = require("plugin")
 local git_plugin = require("git_plugin")
-
--- Run pnpm install
-local function run_pnpm_install(destination)
-  print("Running pnpm install in " .. destination)
-  git_plugin.run_command("cd " .. destination .. " && pnpm install")
-  return 0 -- Ensure success
-end
+local pnpm_plugin = require("pnpm_plugin")
 
 -- Pipeline function
 function pipeline(stages)
@@ -67,7 +61,7 @@ pipeline({
         run = function()
           -- Use the pnpm install in the correct folder
           local destination = "/home/rootster/Documents/rust_dojo/notjen/temp"
-          run_pnpm_install(destination)
+          pnpm_plugin.run_pnpm_install(destination)
           return 0
         end,
       },
