@@ -1,5 +1,5 @@
 -- Require the plugin and the new Git plugin
-local plugin = require("plugin")
+local hook_plugin = require("hook_plugin")
 local git_plugin = require("git_plugin")
 local pnpm_plugin = require("pnpm_plugin")
 
@@ -13,8 +13,8 @@ function pipeline(stages)
 
   for _, stage in pairs(stages) do
     -- Call the plugin's before_stage hook if available
-    if plugin and plugin.before_stage then
-      plugin.before_stage(stage.name)
+    if hook_plugin and hook_plugin.before_stage then
+      hook_plugin.before_stage(stage.name)
     end
 
     print("Stage: " .. stage.name)
@@ -30,8 +30,8 @@ function pipeline(stages)
     end
 
     -- Call the plugin's after_stage hook if available
-    if plugin and plugin.after_stage then
-      plugin.after_stage(stage.name)
+    if hook_plugin and hook_plugin.after_stage then
+      hook_plugin.after_stage(stage.name)
     end
   end
 end
