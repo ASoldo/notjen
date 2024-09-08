@@ -25,7 +25,7 @@ struct Args {
 //     println!("Running job: {} with number: {}", name, job_num);
 // }
 
-// Load Lua configuration from a file and execute the pipeline with optional plugins
+/// Load Lua configuration from a file and execute the pipeline with optional plugins
 fn load_lua_pipeline(file_path: &str, plugin_dir: Option<&str>) -> Result<(), Error> {
     let lua = Lua::new();
 
