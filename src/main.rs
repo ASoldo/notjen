@@ -1,69 +1,52 @@
-use actix_web::{web, App, HttpServer, Responder};
+use clap::Parser;
 use mlua::{Error, Lua};
+use std::fs::read_to_string;
 use tokio::task;
+
+/// Command-line arguments parser
+#[derive(Parser)]
+#[command(
+    name = "Lua Pipeline Runner",
+    version = "1.0",
+    about = "Run Lua pipeline scripts"
+)]
+struct Args {
+    /// Path to the Lua pipeline file
+    #[arg(short, long)]
+    file: String,
+}
 
 // A simple async job function
 async fn run_job(name: &str, job_num: usize) {
     println!("Running job: {} with number: {}", name, job_num);
 }
 
-// Load Lua configuration and execute the pipeline
-fn load_lua_pipeline() -> Result<(), Error> {
+// Load Lua configuration from a file and execute the pipeline
+fn load_lua_pipeline(file_path: &str) -> Result<(), Error> {
+    // Read the Lua script from the file
+    let lua_script = read_to_string(file_path).expect("Unable to read Lua file");
+
     let lua = Lua::new();
-
-    lua.load(
-        r#"
-        function pipeline(stages)
-            for _, stage in pairs(stages) do
-                print("Stage: " .. stage.name)
-                for _, job in pairs(stage.jobs) do
-                    print("Scheduling job: " .. job.name)
-                    local result = job.run()
-                    if result ~= 0 then
-                        error("Job failed: " .. job.name)
-                    end
-                end
-            end
-        end
-
-        -- Define the pipeline stages and jobs
-        pipeline({
-            { name = "Build", jobs = {
-                { name = "Compile", run = function() print("Compiling..."); return 0 end }
-            }},
-            { name = "Test", jobs = {
-                { name = "Unit Tests", run = function() print("Running tests..."); return 0 end }
-            }},
-            { name = "Deploy", jobs = {
-                { name = "Deploy to Production", run = function() print("Deploying..."); return 0 end }
-            }},
-        })
-        "#,
-    )
-    .exec()?;
+    lua.load(&lua_script).exec()?; // Execute the Lua script
 
     Ok(())
 }
 
-// Actix-web handler for job execution
-async fn run_pipeline_handler() -> impl Responder {
-    // Load the Lua configuration and schedule the jobs
-    if let Err(e) = load_lua_pipeline() {
-        return format!("Pipeline execution failed: {:?}", e);
-    }
-
-    // Schedule actual jobs from the Lua pipeline dynamically
-    let job_num = 42; // Example job number; can be replaced with a real job id
-    task::spawn(run_job("Compile", job_num)); // Spawning the job asynchronously
-
-    format!("Pipeline scheduled successfully!")
-}
-
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    // Start the Actix-web server and expose an endpoint for running jobs
-    HttpServer::new(|| App::new().route("/run-pipeline", web::get().to(run_pipeline_handler)))
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+    // Parse command-line arguments using Clap
+    let args = Args::parse();
+
+    // Load the Lua configuration from the provided file path
+    if let Err(e) = load_lua_pipeline(&args.file) {
+        eprintln!("Pipeline execution failed: {:?}", e);
+        std::process::exit(1);
+    }
+
+    // Schedule an example job after loading the Lua pipeline
+    let job_num = 42; // Example job number
+    task::spawn(run_job("Compile", job_num)).await?;
+
+    println!("Pipeline executed successfully from file: {}", args.file);
+    Ok(())
 }

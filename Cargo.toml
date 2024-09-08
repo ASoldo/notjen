@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.9.0"
+clap = { version = "4.5.17", features = ["derive"] }
 mlua = { version = "0.9.9", features = ["lua54"] }
 serde = "1.0.210"
 tokio = { version = "1.40.0", features = ["full"] }
