@@ -28,7 +28,7 @@
 1. Create a Lua pipeline file (e.g., `pipeline.lua`) and a plugin file (e.g., `plugin.lua`).
 2. Run the Rust application by specifying the Lua files:
    ```sh
-   cargo run -- --file lua/pipeline.lua --plugin-dir lua/plugins
+   cargo run -- --file lua/pipelines/pipeline.lua --plugin-dir lua/plugins/plugin
    ```
 ## Extending the System
 
