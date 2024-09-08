@@ -1,7 +1,6 @@
 use clap::Parser;
 use mlua::{Error, Lua};
 use std::fs::read_to_string;
-// use tokio::task;
 
 /// Command-line arguments parser
 #[derive(Parser)]
@@ -19,11 +18,6 @@ struct Args {
     #[arg(short, long)]
     plugin_dir: Option<String>, // Optional plugin directory argument
 }
-
-// A simple async job function
-// async fn run_job(name: &str, job_num: usize) {
-//     println!("Running job: {} with number: {}", name, job_num);
-// }
 
 /// Load Lua configuration from a file and execute the pipeline with optional plugins
 fn load_lua_pipeline(file_path: &str, plugin_dir: Option<&str>) -> Result<(), Error> {
@@ -57,10 +51,6 @@ async fn main() -> std::io::Result<()> {
         eprintln!("Pipeline execution failed: {:?}", e);
         std::process::exit(1);
     }
-
-    // Schedule an example job after loading the Lua pipeline
-    // let job_num = 42; // Example job number
-    // task::spawn(run_job("Compile", job_num)).await?;
 
     println!("Pipeline executed successfully from file: {}", args.file);
     Ok(())
