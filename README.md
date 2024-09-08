@@ -34,3 +34,18 @@
 
 ### Adding More Plugins:
 You can add more plugins by placing additional `.lua` files in the `plugins` directory and referencing them in the pipeline. Each plugin can introduce new jobs, hooks, or other features.
+
+## Running Tests
+
+To test the Git Plugin or any other plugin, you can use [Busted](https://olivinelabs.com/busted/), a unit testing framework for Lua.
+
+Here’s an example of how to run the test for the `git_plugin`:
+
+```sh
+busted lua/plugins/git_plugin_spec.lua
+```
+
+This will execute the tests defined in the `git_plugin_spec.lua` file, which checks if a valid command runs without error.
+
+You can extend the test suite by adding more cases to the describe and it blocks for further validation of the plugin's behavior.
+
