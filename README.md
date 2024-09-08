@@ -1,4 +1,4 @@
-# NotJen - Lua Pipeline Runner with Plugin Support
+# NotJen 
 
 ## Overview
 
