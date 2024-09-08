@@ -34,7 +34,3 @@
 
 ### Adding More Plugins:
 You can add more plugins by placing additional `.lua` files in the `plugins` directory and referencing them in the pipeline. Each plugin can introduce new jobs, hooks, or other features.
-
-### Parallel Job Execution:
-To extend the system further, you can modify the pipeline to support parallel job execution using Rust’s `tokio::spawn` for concurrent job scheduling.
-
