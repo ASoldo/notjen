@@ -1,7 +1,22 @@
--- Require the plugin;
+-- Require the plugin and the new Git plugin
 local plugin = require("plugin")
+local git_plugin = require("git_plugin")
 
+-- Run pnpm install
+local function run_pnpm_install(destination)
+  print("Running pnpm install in " .. destination)
+  git_plugin.run_command("cd " .. destination .. " && pnpm install")
+  return 0 -- Ensure success
+end
+
+-- Pipeline function
 function pipeline(stages)
+  -- Print the current working directory
+  local handle = io.popen("pwd")
+  local current_dir = handle:read("*a"):gsub("\n", "")
+  handle:close()
+  print("Current working directory: " .. current_dir)
+
   for _, stage in pairs(stages) do
     -- Call the plugin's before_stage hook if available
     if plugin and plugin.before_stage then
@@ -12,13 +27,8 @@ function pipeline(stages)
     for _, job in pairs(stage.jobs) do
       print("Scheduling job: " .. job.name)
 
-      -- Use the plugin job if provided, otherwise run the default job
-      local result
-      if plugin and plugin.job then
-        result = plugin.job()
-      else
-        result = job.run()
-      end
+      -- Directly execute the job (bypassing plugin.job)
+      local result = job.run()
 
       if result ~= 0 then
         error("Job failed: " .. job.name)
@@ -35,36 +45,29 @@ end
 -- Define the pipeline stages and jobs
 pipeline({
   {
-    name = "Build",
+    name = "Clone Repository",
     jobs = {
       {
-        name = "Compile",
+        name = "Clone nuxt3-sanity repository",
         run = function()
-          print("Compiling...")
+          -- Use the Git plugin to clone the repo
+          local repo_url = "https://github.com/ASoldo/nuxt3-sanity"
+          local destination = "/home/rootster/Documents/rust_dojo/notjen/temp/"
+          git_plugin.clone(repo_url, destination)
           return 0
         end,
       },
     },
   },
   {
-    name = "Test",
+    name = "Install Dependencies",
     jobs = {
       {
-        name = "Unit Tests",
+        name = "Run pnpm install",
         run = function()
-          print("Running tests...")
-          return 0
-        end,
-      },
-    },
-  },
-  {
-    name = "Deploy",
-    jobs = {
-      {
-        name = "Deploy to Production",
-        run = function()
-          print("Deploying...")
+          -- Use the pnpm install in the correct folder
+          local destination = "/home/rootster/Documents/rust_dojo/notjen/temp"
+          run_pnpm_install(destination)
           return 0
         end,
       },
