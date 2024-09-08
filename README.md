@@ -37,7 +37,7 @@ You can add more plugins by placing additional `.lua` files in the `plugins` dir
 
 ## Running Tests
 
-To test the Git Plugin or any other plugin, you can use [Busted](https://olivinelabs.com/), a unit testing framework for Lua.
+To test the Git Plugin or any other plugin, you can use [Busted](https://lunarmodules.github.io/busted/), a unit testing framework for Lua.
 
 Here’s an example of how to run the test for the `git_plugin`:
 
