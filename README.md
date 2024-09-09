@@ -1,4 +1,5 @@
 # NotJen 
+![image](https://github.com/user-attachments/assets/2ebcb887-5727-4d6e-bf03-ffe6d069ac49)
 
 ## Overview
 
