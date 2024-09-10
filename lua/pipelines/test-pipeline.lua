@@ -1,14 +1,11 @@
 -- Require the plugins
 local hook_plugin = require("hook_plugin")
-local git_plugin = require("git_plugin")
-local pnpm_plugin = require("pnpm_plugin")
 
 function print_me(name)
   print(name)
 end
 
 -- Pipeline function
---
 -- pass the stages as table
 --- @param stages table<{name: string,jobs: table<{name: string, run: function}>}>
 --
@@ -58,29 +55,19 @@ end
 -- Define the pipeline stages and jobs
 pipeline({
   {
-    name = "Clone Repository",
+    name = "Test",
     jobs = {
       {
-        name = "Clone nuxt3-sanity repository",
+        name = "Test Run",
         run = function()
-          -- Use the Git plugin to clone the repo
-          local repo_url = "https://github.com/ASoldo/nuxt3-sanity"
-          local destination = "/home/rootster/Documents/rust_dojo/notjen/temp/"
-          git_plugin.clone(repo_url, destination)
-          return 0
-        end,
-      },
-    },
-  },
-  {
-    name = "Install Dependencies",
-    jobs = {
-      {
-        name = "Run pnpm install",
-        run = function()
-          -- Use the pnpm install in the correct folder
-          local destination = "/home/rootster/Documents/rust_dojo/notjen/temp"
-          pnpm_plugin.run_pnpm_install(destination)
+          hook_plugin.before(function()
+            print("Before ls")
+          end)
+          os.execute("ls")
+          hook_plugin.after(function()
+            print("after ls")
+          end)
+
           return 0
         end,
       },
