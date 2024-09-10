@@ -1,3 +1,7 @@
+-- Adjust package paths to include your plugin directory
+-- package.path = package.path .. ";../plugins/?.lua"
+-- package.cpath = package.cpath .. ";../plugins/?.so"
+
 -- Require the plugins
 local hook_plugin = require("hook_plugin")
 local print_me_plugin = require("print_me_plugin")
@@ -5,6 +9,8 @@ local state_plugin = require("state_plugin")
 local pwd_plugin = require("pwd_plugin")
 local stages_plugin = require("stages_plugin")
 local env_plugin = require("env_plugin")
+
+-- Set the package loader
 
 -- Pipeline function
 -- pass the stages as table
@@ -30,6 +36,9 @@ pipeline({
       {
         name = "Test Run",
         run = function()
+          -- print("Current package.path: " .. package.path)
+          -- print("Current package.cpath: " .. package.cpath)
+
           hook_plugin.before(function()
             print("Before ls")
             state_plugin.set("test", "Andrija")

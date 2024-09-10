@@ -5,9 +5,9 @@ use std::fs::read_to_string;
 /// Command-line arguments parser
 #[derive(Parser)]
 #[command(
-    name = "Lua Pipeline Runner",
+    name = "NotJen - Lua Pipeline Runner",
     version = "1.0",
-    about = "Run Lua pipeline scripts with plugins"
+    about = "Run Lua pipeline scripts with custom plugins"
 )]
 struct Args {
     /// Path to the Lua pipeline file
@@ -23,19 +23,34 @@ struct Args {
 fn load_lua_pipeline(file_path: &str, plugin_dir: Option<&str>) -> Result<(), Error> {
     let lua = Lua::new();
 
-    // Set the Lua package.path to include the plugin directory
     if let Some(plugin_dir) = plugin_dir {
         let globals = lua.globals();
         let package: mlua::Table = globals.get("package")?;
+
+        // Update package.path
         let current_path: String = package.get("path")?;
-        // Add the plugin directory to the package.path
-        package.set("path", format!("{}/?.lua;{}", plugin_dir, current_path))?;
+        package.set(
+            "path",
+            format!(
+                "{}/?.lua;/usr/share/lua/5.4/?.lua;{}",
+                plugin_dir, current_path
+            ),
+        )?;
+
+        // Update package.cpath
+        let current_cpath: String = package.get("cpath")?;
+
+        package.set(
+            "cpath",
+            format!(
+                "{}/?.so;/usr/lib/lua/5.4/?.so;{}",
+                plugin_dir, current_cpath
+            ),
+        )?;
     }
 
-    // Load the Lua script from the pipeline file
     let lua_script = read_to_string(file_path).expect("Unable to read Lua file");
 
-    // Load and execute the pipeline Lua script
     lua.load(&lua_script).exec()?;
 
     Ok(())
