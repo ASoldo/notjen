@@ -4,6 +4,7 @@ local print_me_plugin = require("print_me_plugin")
 local state_plugin = require("state_plugin")
 local pwd_plugin = require("pwd_plugin")
 local stages_plugin = require("stages_plugin")
+local env_plugin = require("env_plugin")
 
 -- Pipeline function
 -- pass the stages as table
@@ -18,6 +19,7 @@ local stages_plugin = require("stages_plugin")
 local function pipeline(stages)
   pwd_plugin.pwd()
   stages_plugin.execute_stages(stages, hook_plugin, print_me_plugin)
+  env_plugin.get_env("USER")
 end
 
 -- Define the pipeline stages and jobs
