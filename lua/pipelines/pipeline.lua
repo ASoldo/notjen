@@ -18,7 +18,7 @@ end
 --    { name = "Build", jobs = { {name = "Compile", run = function() end} } }
 -- }
 -- ```
-function pipeline(stages)
+local function pipeline(stages)
   -- Print the current working directory
   local handle = io.popen("pwd")
   local current_dir = handle:read("*a"):gsub("\n", "")
