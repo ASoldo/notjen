@@ -1,6 +1,9 @@
 local M = {}
 
 -- Function to run a curl command with optional pipe commands
+---@param url string
+---@param ... string[]
+---@return string
 function M.run_curl_with_pipe(url, ...)
 	-- Build the base curl command
 	local curl_command = "curl -s '" .. url .. "'"
