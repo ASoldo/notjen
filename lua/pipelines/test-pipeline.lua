@@ -47,8 +47,8 @@ pipeline({
 					print(
 						curl_plugin.run_curl_with_pipe(
 							"https://pokeapi.co/api/v2/pokemon/ditto",
-							" jq '.name'",
-							" tr -d '\"' "
+							"jq '.name'",
+							"tr -d '\"'"
 						)
 					)
 					local yaml_content = yaml_plugin.create_yaml(data)
