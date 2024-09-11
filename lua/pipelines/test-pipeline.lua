@@ -9,7 +9,13 @@ local state_plugin = require("state_plugin")
 local pwd_plugin = require("pwd_plugin")
 local stages_plugin = require("stages_plugin")
 local env_plugin = require("env_plugin")
-local lyaml = require("lyaml")
+local yaml_plugin = require("yaml_plugin")
+
+local data = {
+	name = "Soki",
+	profession = "Software Engineer",
+	age = 34,
+}
 
 -- Pipeline function
 -- pass the stages as table
@@ -35,7 +41,10 @@ pipeline({
 			{
 				name = "Test Run",
 				run = function()
-					print("LYAML", lyaml)
+					local yaml_content = yaml_plugin.create_yaml(data)
+					yaml_plugin.parse_yaml(yaml_content, "name")
+					yaml_plugin.parse_yaml(yaml_content, "age")
+
 					-- print("Current package.path: " .. package.path)
 					-- print("Current package.cpath: " .. package.cpath)
 
