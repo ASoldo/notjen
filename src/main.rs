@@ -21,7 +21,7 @@ struct Args {
 
 /// Load Lua configuration from a file and execute the pipeline with optional plugins
 fn load_lua_pipeline(file_path: &str, plugin_dir: Option<&str>) -> Result<(), Error> {
-    let lua = Lua::new();
+    let lua = unsafe { Lua::unsafe_new() };
 
     if let Some(plugin_dir) = plugin_dir {
         let globals = lua.globals();

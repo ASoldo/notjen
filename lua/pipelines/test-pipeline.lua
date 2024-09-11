@@ -9,6 +9,7 @@ local state_plugin = require("state_plugin")
 local pwd_plugin = require("pwd_plugin")
 local stages_plugin = require("stages_plugin")
 local env_plugin = require("env_plugin")
+local lyaml = require("lyaml")
 
 -- Pipeline function
 -- pass the stages as table
@@ -34,6 +35,7 @@ pipeline({
 			{
 				name = "Test Run",
 				run = function()
+					print("LYAML", lyaml)
 					-- print("Current package.path: " .. package.path)
 					-- print("Current package.cpath: " .. package.cpath)
 
