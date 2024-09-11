@@ -11,6 +11,7 @@ local pwd_plugin = require("pwd_plugin")
 local stages_plugin = require("stages_plugin")
 local env_plugin = require("env_plugin")
 local curl_plugin = require("curl_plugin")
+local timer_plugin = require("timer_plugin")
 
 local yaml_plugin = require("yaml_plugin")
 
@@ -45,13 +46,20 @@ pipeline({
 				name = "Test Run",
 				run = function()
 					os.execute("curl https://pokeapi.co/api/v2/pokemon/ditto | jq '.name' | tr -d '\"' ")
-					print(
-						curl_plugin.run_curl_with_pipe(
-							"https://pokeapi.co/api/v2/pokemon/25",
-							"jq '.name'",
-							"tr -d '\"'"
+
+					local result, time = timer_plugin.time_job("Curl", function()
+						print(
+							curl_plugin.run_curl_with_pipe(
+								"https://pokeapi.co/api/v2/pokemon/25",
+								"jq '.name'",
+								"tr -d '\"'"
+							)
 						)
-					)
+						return 0
+					end)
+					print(result)
+					print(time)
+
 					local yaml_content = yaml_plugin.create_yaml(data)
 					yaml_plugin.parse_yaml(yaml_content, "name")
 					yaml_plugin.parse_yaml(yaml_content, "age")
