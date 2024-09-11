@@ -17,11 +17,24 @@ struct Args {
     /// Path to the Lua plugin file (directory)
     #[arg(short, long)]
     plugin_dir: Option<String>, // Optional plugin directory argument
+
+    /// Enable safe mode (default is unsafe)
+    #[arg(long, action = clap::ArgAction::SetTrue)]
+    safe: bool, // Defaults to false
 }
 
 /// Load Lua configuration from a file and execute the pipeline with optional plugins
-fn load_lua_pipeline(file_path: &str, plugin_dir: Option<&str>) -> Result<(), Error> {
-    let lua = unsafe { Lua::unsafe_new() };
+fn load_lua_pipeline(
+    file_path: &str,
+    plugin_dir: Option<&str>,
+    safe_mode: bool,
+) -> Result<(), Error> {
+    // Choose Lua mode based on the --safe flag
+    let lua = if safe_mode {
+        Lua::new() // Safe Lua
+    } else {
+        unsafe { Lua::unsafe_new() } // Unsafe Lua
+    };
 
     if let Some(plugin_dir) = plugin_dir {
         let globals = lua.globals();
@@ -62,7 +75,7 @@ async fn main() -> std::io::Result<()> {
     let args = Args::parse();
 
     // Load the Lua configuration and optional plugin directory
-    if let Err(e) = load_lua_pipeline(&args.file, args.plugin_dir.as_deref()) {
+    if let Err(e) = load_lua_pipeline(&args.file, args.plugin_dir.as_deref(), args.safe) {
         eprintln!("Pipeline execution failed: {:?}", e);
         std::process::exit(1);
     }
