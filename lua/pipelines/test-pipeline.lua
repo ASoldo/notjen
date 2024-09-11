@@ -3,6 +3,7 @@
 -- package.cpath = package.cpath .. ";../plugins/?.so"
 
 -- Require the plugins
+
 local hook_plugin = require("hook_plugin")
 local print_me_plugin = require("print_me_plugin")
 local state_plugin = require("state_plugin")
@@ -19,11 +20,11 @@ local data = {
 	age = 34,
 }
 
--- Pipeline function
+--- Pipeline function
 -- pass the stages as table
---- @param stages table<{name: string,jobs: table<{name: string, run: function}>}>
+--- @param stages table List of stages
 --
--- @usage
+--- @usage stages table example
 -- ```lua
 -- local stages = {
 --    { name = "Build", jobs = { {name = "Compile", run = function() end} } }
@@ -46,7 +47,7 @@ pipeline({
 					os.execute("curl https://pokeapi.co/api/v2/pokemon/ditto | jq '.name' | tr -d '\"' ")
 					print(
 						curl_plugin.run_curl_with_pipe(
-							"https://pokeapi.co/api/v2/pokemon/ditto",
+							"https://pokeapi.co/api/v2/pokemon/25",
 							"jq '.name'",
 							"tr -d '\"'"
 						)
