@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Pipeline Dashboard</title>
+</head>
+
+<body>
+  <table>
+    <tr>
+      <th>Stage</th>
+      <th>Job</th>
+      <th>Status</th>
+      <th>Time Taken</th>
+    </tr>
+    {% for report in reports %}
+    <tr>
+      <td>{{ report.stage }}</td>
+      <td>{{ report.job }}</td>
+      <td>{{ report.status }}</td>
+      <td>{{ report.time_taken }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+
+</html>

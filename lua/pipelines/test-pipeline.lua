@@ -12,6 +12,8 @@ local stages_plugin = require("stages_plugin")
 local env_plugin = require("env_plugin")
 local curl_plugin = require("curl_plugin")
 local timer_plugin = require("timer_plugin")
+local git_plugin = require("git_plugin")
+local pnpm_plugin = require("pnpm_plugin")
 
 local yaml_plugin = require("yaml_plugin")
 
@@ -33,7 +35,7 @@ local data = {
 -- ```
 local function pipeline(stages)
 	pwd_plugin.pwd()
-	stages_plugin.execute_stages(stages, hook_plugin, print_me_plugin)
+	stages_plugin.execute_stages(stages)
 	env_plugin.get_env("USER")
 end
 
@@ -98,6 +100,30 @@ pipeline({
 						print(state_plugin.get("test"))
 					end)
 
+					return 0
+				end,
+			},
+		},
+	},
+	{
+		name = "Clone Repository",
+		jobs = {
+			{
+				name = "Clone nuxt3-sanity repository",
+				run = function()
+					-- Use the Git plugin to clone the repo
+					local repo_url = "https://github.com/ASoldo/nuxt3-sanity"
+					local destination = "/home/rootster/Documents/rust_dojo/notjen/temp/"
+					git_plugin.clone(repo_url, destination)
+					return 0
+				end,
+			},
+			{
+				name = "Run pnpm install",
+				run = function()
+					-- Use the pnpm install in the correct folder
+					local destination = "/home/rootster/Documents/rust_dojo/notjen/temp"
+					pnpm_plugin.run_pnpm_install(destination)
 					return 0
 				end,
 			},
